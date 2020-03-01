@@ -71,9 +71,8 @@ public class ContatoDao {
 
 	}
 
-	public Contato pesquisaContato(int id){
-		
-		
+	public Contato pesquisaContato(int id) {
+
 		try {
 			Contato contatoProcurado = new Contato();
 			String sql = ("select * from contato where id=?");
@@ -81,20 +80,19 @@ public class ContatoDao {
 			stmt.setLong(1, id);
 			stmt.execute();
 			ResultSet rs = stmt.executeQuery();
-			
-			while(rs.next()){
-				
-				
+
+			while (rs.next()) {
+
 				contatoProcurado.setId(rs.getLong("id"));
 				contatoProcurado.setNome(rs.getString("nome"));
 				contatoProcurado.setEmail(rs.getString("email"));
 				contatoProcurado.setEndereco(rs.getString("endereco"));
-				
+
 				Calendar data = Calendar.getInstance();
 				data.setTime(rs.getDate("dataNascimento"));
 				contatoProcurado.setDataNascimento(data);
 			}
-			
+
 			rs.close();
 			stmt.close();
 			return contatoProcurado;
@@ -102,13 +100,13 @@ public class ContatoDao {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public void altera(Contato contato){
+
+	public void altera(Contato contato) {
 		String sql = "update contato set nome=?, email=?, endereco=?, dataNascimento=? where id=?";
-		
+
 		try {
 			PreparedStatement stmt = connection.prepareStatement(sql);
-			
+
 			stmt.setString(1, contato.getNome());
 			stmt.setString(2, contato.getEmail());
 			stmt.setString(3, contato.getEndereco());
@@ -120,5 +118,15 @@ public class ContatoDao {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public void remove(Contato contato){
+		try {
+			PreparedStatement stmt = connection.prepareStatement("delete from contato where id=?");
+			stmt.setLong(1, contato.getId());
+			stmt.execute();
+			stmt.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-
+}
